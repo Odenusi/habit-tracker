@@ -119,7 +119,7 @@ def cli(habits):
                     habit = Habit(name, "no description", "daily", 0)  # this line may be unnecessary
                     habit.add_event(db, date)
                     calculated_streak = calculate_current_streak(streak_dates)
-                    print(streak_dates)
+                    # print(streak_dates)
                     # print("Your current streak is: " + str(calculated_streak) + " day(s)")
 
                 else:
@@ -127,7 +127,7 @@ def cli(habits):
                     habit.add_event(db, date)
                     # streak = streak_func(db, name)
                     calculated_streak = current_weekly_streak(streak_dates)
-                    print(streak_dates)
+                    # print(streak_dates)
                     # print(f"Your current streak for {name} is: {str(calculated_streak)} week(s)")
             else:
                 habit = Habit(name, "no description", "no periodicity", 0)
