@@ -155,11 +155,11 @@ def cli(habits):
                 for x in streak_info:
                     streak_dates.append(x[1])
                 if name in same_periodicity(db, "daily"):
-                    longest_streak_value = longest_streak_func(streak_dates)
-                    print(f"your longest streak for {name} is {longest_streak_value} day(s)")
+                    current_streak_value = calculate_current_streak(streak_dates)
+                    print(f"your current streak for {name} is {current_streak_value} day(s)")
                 else:
-                    longest_streak_value = longest_weekly_streak(streak_dates)
-                    print(f"your longest streak for {name} is {longest_streak_value} week(s)")
+                    current_streak_value = current_weekly_streak(streak_dates)
+                    print(f"your longest streak for {name} is {current_streak_value} week(s)")
 
             elif analysis_choice == "Check Entries":
                 name = questionary.select(
