@@ -1,5 +1,5 @@
-from db import add_habit, check_habit, add_adapted_habit
-import sqlite3
+from db import add_habit, check_habit
+# import sqlite3
 
 
 class Habit:
@@ -80,15 +80,6 @@ class Habit:
         """
         add_habit(db, self.name, self.description, self.periodicity, self.longest_streak)
 
-    def store_adapted_habit(self, db, habit):
-        """
-        Stores the habit in our database by adding it to our habits table.
-        :param db: an initialized sqlite3 database connection
-        :param habit: adapted habit to be added to longest_streak_table
-        :return: None
-        """
-        add_adapted_habit(db, habit)
-
     def add_event(self, db, date: str = None):
         """
         Checks off our habit by adding it to the tracker table.
@@ -97,6 +88,7 @@ class Habit:
         :return: None
         """
         check_habit(db, self.name, date)
+
         self.is_checked = True
 
     def test_event(self, db, date):
@@ -108,10 +100,3 @@ class Habit:
         """
         check_habit(db, self.name, date)
         self.is_checked = True
-
-
-def adapt_habit(habit):  # adapt python class to sqlite3 data type
-    return f"{habit.name};{habit.longest_streak}"
-
-
-sqlite3.register_adapter(Habit, adapt_habit)
