@@ -1,5 +1,6 @@
 import sqlite3
 import datetime
+from date_reformatter import format_date
 
 
 def get_db(name='main.db'):
@@ -36,7 +37,11 @@ def create_tables(db):
 
     cur.execute("""CREATE TABLE IF NOT EXISTS longest_streak_table (
     habitName,
-    habit)""")
+    streak INT)""")
+
+    cur.execute("""CREATE TABLE IF NOT EXISTS streak_table (
+    habitName,
+    streakDates)""")
 
     db.commit()
 
@@ -56,16 +61,49 @@ def add_habit(db, name, description, periodicity, longest_streak):
     db.commit()
 
 
-def add_adapted_habit(db, habit_name, habit):
+def add_streaks(db, habit, streak_date):
+    """
+
+    :param db:
+    :param habit:
+    :param streak_date:
+    :return:
+    """
+    cur = db.cursor()
+    cur.execute("INSERT INTO streak_table VALUES (?, ?)", (habit, streak_date))
+    db.commit()
+
+
+def return_streaks(db, habit):
+    """
+
+    :param db:
+    :param habit:
+    :return:
+    """
+    cur = db.cursor()
+    cur.execute("SELECT * FROM streak_table WHERE habitName=?", (habit,))
+    return cur.fetchall()
+
+
+def longest_streak_max_value(db, habit_name):
+    cur = db.cursor()
+    cur.execute("SELECT MAX(streak) FROM longest_streak_table WHERE habitName=?", (habit_name,))
+    max_value = cur.fetchone()[0]
+
+    return max_value
+
+
+def update_longest_streak(db, habit_name, streak):
     """
     Adds habits to the Habits table and commits these changes.
     :param db: An initialized sqlite3 database connection.
-    :param habit: The longest streak the has had.
+    :param streak: The longest streak the has had.
     :param habit_name: The longest streak the has had.
     :return: None
     """
     cur = db.cursor()
-    cur.execute("INSERT INTO longest_streak_table VALUES (?, ?)", (habit_name, habit))
+    cur.execute("INSERT OR IGNORE INTO longest_streak_table VALUES (?, ?)", (habit_name, streak))
     db.commit()
 
 
@@ -80,13 +118,17 @@ def check_habit(db, name, event_date=None):
     cur = db.cursor()
     if not event_date:
         event_date = str(datetime.date.today())
-    cur.execute("INSERT INTO tracker VALUES (?, ?)", (name, event_date))  # this formatting prevents sql injections
+        event_date_reformatted = format_date(event_date)
+    else:
+        event_date_reformatted = format_date(event_date)
+    cur.execute("INSERT INTO tracker VALUES (?, ?)", (name, event_date_reformatted))  # format prevents sql injections
+    add_streaks(db, name, event_date_reformatted)
     db.commit()
 
 
 def custom_data(db, name, event_date):
     """
-    function to insert custom data (preferably for testing purposes
+    function to insert custom data (preferably for testing purposes)
     :param db:
     :param name:
     :param event_date:
@@ -165,24 +207,26 @@ def return_habits(db):
     """
     Returns all the rows from the Habit table where the name field matches the name argument.
     :param db: an initialized sqlite3 database connection.
-    :return: all the rows from the Habit table.
+    :return: the names of the habits in the Habit table.
     """
     cur = db.cursor()
     cur.execute("SELECT * FROM habits")  # remember to check if the data actually exists in the database
-    rows = cur.fetchall()
-    habits = []
-    habit_names = []
+    rows = cur.fetchall()  # Every row in the habit table is now in the row variable
+    habits = []  # List ot store the habits from the habit table
+    habit_names = []  # List to store just the name of the habit from the habit list
     for row in rows:
         habits.append(row[0])
     for habit in habits:
         habit_names.append(habit)
 
-    return habit_names
+    return habit_names  # returns a list of the habit names
 
 
 def return_adapted_habits(db, habit_name):
     """
     Returns all the rows from the Habit table where the name field matches the name argument.
+    Adapted in the sense that these habits are form the longest_streak_table and are in descending order??
+    And that they are purely the rows from said table. So technically "unadapted".
     :param db: an initialized sqlite3 database connection.
     :param habit_name: the name of the habit
     :return: all the rows from the Habit table.
