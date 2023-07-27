@@ -6,6 +6,10 @@ from habit import Habit
 class TestHabit:
 
     def setup_method(self):
+        """
+        Setup method
+        :return: None
+        """
         self.db = get_db(':memory:')
         add_habit(self.db, "read", "read everyday", "daily", 0)
         add_habit(self.db, "write", "write daily", "daily", 0)
@@ -124,6 +128,10 @@ class TestHabit:
         check_habit(self.db, "sauna", "2023-06-28")
 
     def test_habit(self):
+        """
+        test habit
+        :return: None
+        """
         habit = Habit("test_habit", "test_description", "test_periodicity", 0)
 
         habit.get_name()
@@ -134,6 +142,10 @@ class TestHabit:
         habit.add_event(self.db)
 
     def test_read(self):
+        """
+        test habit
+        :return: None
+        """
         streak_info = return_streaks(self.db, "read")
         streak_dates = []
         for x in streak_info:
@@ -145,6 +157,10 @@ class TestHabit:
         assert current_streak == 3
 
     def test_write(self):
+        """
+        test habit
+        :return: None
+        """
         streak_info = return_streaks(self.db, "write")
         streak_dates = []
         for x in streak_info:
@@ -156,6 +172,10 @@ class TestHabit:
         assert current_streak == 4
 
     def test_study(self):
+        """
+        test habit
+        :return: None
+        """
         streak_info = return_streaks(self.db, "study")
         streak_dates = []
         for x in streak_info:
@@ -167,6 +187,10 @@ class TestHabit:
         assert current_streak == 2
 
     def test_draw(self):
+        """
+        test habit
+        :return: None
+        """
         streak_info = return_streaks(self.db, "draw")
         streak_dates = []
         for x in streak_info:
@@ -178,6 +202,10 @@ class TestHabit:
         assert current_streak == 1
 
     def test_sauna(self):
+        """
+        test habit
+        :return: None
+        """
         streak_info = return_streaks(self.db, "sauna")
         streak_dates = []
         for x in streak_info:
@@ -189,6 +217,10 @@ class TestHabit:
         assert current_streak == 5
 
     def test_same_periodicity(self):
+        """
+        tests the periodicity function
+        :return: None
+        """
         daily_habits = []
         weekly_habits = []
         for habit in same_periodicity(self.db, "daily"):
@@ -202,6 +234,10 @@ class TestHabit:
         assert "sauna" in weekly_habits
 
     def test_list_habits(self):
+        """
+        tests the "habit list" function
+        :return: None
+        """
         habits_list = return_habits(self.db)
         assert "write" in habits_list
         assert "read" in habits_list

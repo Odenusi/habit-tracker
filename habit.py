@@ -1,5 +1,4 @@
 from db import add_habit, check_habit
-# import sqlite3
 
 
 class Habit:
@@ -15,7 +14,7 @@ class Habit:
         self.description = description  # short description of the habit
         self.periodicity = periodicity  # the habit's periodicity
         self.longest_streak = longest_streak  # the longest streak the habit has had
-        self.is_checked = False  # habit is not complete by default   This line might be unnecessary
+        self.is_checked = False  # habit is not complete by default
 
     def set_name(self, name):
         """
@@ -93,9 +92,9 @@ class Habit:
 
     def test_event(self, db, date):
         """
-        check off function with custom date
-        :param db:
-        :param date:
+        test check off function with custom date
+        :param db: The database that where the habit data is stored
+        :param date: The checkoff date of the habit
         :return:
         """
         check_habit(db, self.name, date)
