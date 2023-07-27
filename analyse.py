@@ -2,19 +2,12 @@ from db import get_habit_tracker_data
 from datetime import datetime, timedelta
 
 
-def calculate_streak(db, habit):
-    """
-    Calculate streak of the habit
-
-    :param db: an initialized sqlite3 database connection
-    :param habit: name of the habit present in the database
-    :return: length of the habit check events (should probably clarify on this)
-    """
-    data = get_habit_tracker_data(db, habit)  # compute something like number of consecutive check offs
-    return len(data)
-
-
 def calculate_current_streak(dates):
+    """
+
+    :param dates: The dates the habit was checked off
+    :return: The current streak as an int
+    """
     # Convert date strings to datetime objects
     dates = [datetime.strptime(date, "%Y%m%d") for date in dates]
 
@@ -39,6 +32,11 @@ def calculate_current_streak(dates):
 
 
 def longest_streak_func(dates):
+    """
+
+    :param dates: The dates the habit was checked off
+    :return: The longest streak as an int
+    """
     from datetime import datetime, timedelta
     date_objs = [datetime.strptime(date, '%Y%m%d') for date in dates]
     sorted_dates = sorted(date_objs)
@@ -57,9 +55,14 @@ def longest_streak_func(dates):
 
 
 def current_weekly_streak(dates):
+    """
+
+    :param dates: The dates the habit was checked off
+    :return: The current weekly streak as an int
+    """
     streak = 1
     current_date = datetime.strptime(dates[0], '%Y%m%d')
-    # first_date = current_date
+
     for i in range(1, len(dates)):
         next_date = datetime.strptime(dates[i], '%Y%m%d')
         if (next_date - current_date).days == 7:
@@ -81,6 +84,11 @@ def current_weekly_streak(dates):
 
 
 def longest_weekly_streak(dates):
+    """
+
+    :param dates: The dates the habit was checked off
+    :return: The longest weekly streak as an int
+    """
     streak = 1
     current_date = datetime.strptime(dates[0], '%Y%m%d')
     longest_streak = 1
@@ -111,7 +119,7 @@ def print_entries(db, habit):
 
     :param db: an initialized sqlite3 database connection
     :param habit: name of the habit present in the database
-    :return: A list of a habit and check-off dates and times
+    :return: A list of a habit and check-off dates
     """
     data = get_habit_tracker_data(db, habit)  # compute something like number of consecutive check offs
 
@@ -122,10 +130,10 @@ def get_all_habit_table_data(db):
     """
     Returns all the rows from the Habit table where the name field matches the name argument.
     :param db: an initialized sqlite3 database connection
-    :return: all the rows from the Habit table where the name field matches the name argument.
+    :return: all the rows from the Habit table.
     """
     cur = db.cursor()
-    cur.execute("SELECT * FROM habits")  # remember to check if the data actually exists in the database
+    cur.execute("SELECT * FROM habits")
     return cur.fetchall()
 
 

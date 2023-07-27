@@ -1,7 +1,7 @@
 import questionary  # Imports the questionary module used to create the sleek user interface
 
 from analyse import get_all_habit_table_data, print_entries, same_periodicity
-from db import get_db, return_habits, update_longest_streak, add_streaks, return_streaks
+from db import get_db, return_habits, update_longest_streak, return_streaks
 from habit import Habit  # Imports the Habit class from the habit module
 from analyse import calculate_current_streak, longest_streak_func, current_weekly_streak, \
     longest_weekly_streak
@@ -108,7 +108,7 @@ def cli(habits):
                         day_validity = "invalid"
 
                 date = str(year + "-" + month + "-" + day)
-                streak_date = int(year+month+day)
+                streak_date = int(year + month + day)
                 # add_streaks(db, name, str(streak_date)) # streaks were added in check habit
                 streak_info = return_streaks(db, name)
                 streak_dates = []
@@ -116,19 +116,14 @@ def cli(habits):
                 for x in streak_info:
                     streak_dates.append(x[1])
                 if name in same_periodicity(db, "daily"):
-                    habit = Habit(name, "no description", "daily", 0)  # this line may be unnecessary
+                    habit = Habit(name, "no description", "daily", 0)
                     habit.add_event(db, date)
                     calculated_streak = calculate_current_streak(streak_dates)
-                    # print(streak_dates)
-                    # print("Your current streak is: " + str(calculated_streak) + " day(s)")
 
                 else:
                     habit = Habit(name, "no description", "weekly", 0)  # this line may be unnecessary
                     habit.add_event(db, date)
-                    # streak = streak_func(db, name)
                     calculated_streak = current_weekly_streak(streak_dates)
-                    # print(streak_dates)
-                    # print(f"Your current streak for {name} is: {str(calculated_streak)} week(s)")
             else:
                 habit = Habit(name, "no description", "no periodicity", 0)
                 habit.add_event(db)
@@ -142,7 +137,8 @@ def cli(habits):
         elif choice == "Analyse":  # If the 'analyse' action is chosen they will be able to take action accordingly
             analysis_choice = questionary.select(
                 "What analysis do you want for this habit?",
-                choices=["Current Streak", "Check Entries", "List Habits", "Same Periodicity", "Longest streak for All Habits",
+                choices=["Current Streak", "Check Entries", "List Habits", "Same Periodicity",
+                         "Longest streak for All Habits",
                          "Longest Streak for a Habit"]
             ).ask()
             if analysis_choice == "Current Streak":
@@ -219,7 +215,6 @@ def cli(habits):
                     choices=return_habits(db)
                 ).ask()
 
-                # longest_streak_value = 0
                 streak_info = return_streaks(db, name)
                 streak_dates = []
                 for x in streak_info:

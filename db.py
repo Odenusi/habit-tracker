@@ -53,7 +53,7 @@ def add_habit(db, name, description, periodicity, longest_streak):
     :param name: The name of the habit.
     :param description: The description of the habit.
     :param periodicity: The periodicity of the habit.
-    :param longest_streak: The longest streak the has had.
+    :param longest_streak: The longest streak the habit has had.
     :return: None
     """
     cur = db.cursor()
@@ -63,10 +63,10 @@ def add_habit(db, name, description, periodicity, longest_streak):
 
 def add_streaks(db, habit, streak_date):
     """
-
-    :param db:
-    :param habit:
-    :param streak_date:
+    Adds streaks to the streak table
+    :param db: An initialized sqlite3 database connection.
+    :param habit: The created habit that's been checked off
+    :param streak_date: streak date for the streak table
     :return:
     """
     cur = db.cursor()
@@ -76,10 +76,10 @@ def add_streaks(db, habit, streak_date):
 
 def return_streaks(db, habit):
     """
-
-    :param db:
-    :param habit:
-    :return:
+    Returns streaks from the streak table
+    :param db: An initialized sqlite3 database connection.
+    :param habit: The created habit that's been checked off
+    :return: All rows from the streak table for the corresponding habit
     """
     cur = db.cursor()
     cur.execute("SELECT * FROM streak_table WHERE habitName=?", (habit,))
@@ -87,6 +87,12 @@ def return_streaks(db, habit):
 
 
 def longest_streak_max_value(db, habit_name):
+    """
+    Returns the longest streak value
+    :param db: An initialized sqlite3 database connection.
+    :param habit_name: The name of the corresponding habit
+    :return: The row with the largest value from the longest_streak_table according to the corresponding habit
+    """
     cur = db.cursor()
     cur.execute("SELECT MAX(streak) FROM longest_streak_table WHERE habitName=?", (habit_name,))
     max_value = cur.fetchone()[0]
@@ -96,6 +102,7 @@ def longest_streak_max_value(db, habit_name):
 
 def update_longest_streak(db, habit_name, streak):
     """
+    Updates the longest streak value
     Adds habits to the Habits table and commits these changes.
     :param db: An initialized sqlite3 database connection.
     :param streak: The longest streak the has had.
@@ -129,10 +136,10 @@ def check_habit(db, name, event_date=None):
 def custom_data(db, name, event_date):
     """
     function to insert custom data (preferably for testing purposes)
-    :param db:
-    :param name:
-    :param event_date:
-    :return:
+    :param db: An initialized sqlite3 database connection.
+    :param name: The name of the custom habit
+    :param event_date: The custom date
+    :return: None
     """
     cur = db.cursor()
     cur.execute("INSERT INTO tracker VALUES (?, ?)", (name, event_date))  # this formatting prevents sql injections
@@ -167,7 +174,7 @@ def get_habit_table_data(db, name):
 
 def update_habit_periodicity(db, name, periodicity):
     """
-
+    Function to chenge the habits periodicity
     :param db: an initialized sqlite3 database connection
     :param name: Habit's name as a string
     :param periodicity: habit's new periodicity, either 'weekly' or 'daily'
@@ -180,7 +187,7 @@ def update_habit_periodicity(db, name, periodicity):
 
 def update_habit_longest_streak(db, name, longest_streak):
     """
-
+    Updates the habit's longest streak
     :param db: an initialized sqlite3 database connection
     :param name: Habit's name as a string
     :param longest_streak: habit's new longest streak value
@@ -193,7 +200,7 @@ def update_habit_longest_streak(db, name, longest_streak):
 
 def remove_habit(db, name):
     """
-
+    Deletes habit from the habits list
     :param db: an initialized sqlite3 database connection
     :param name: Habit's name as a string
     :return: None
